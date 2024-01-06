@@ -1,0 +1,537 @@
+---
+import HeaderLink from './HeaderLink.astro';
+import HeaderSmall from "../components/HeaderSmall.astro";
+import { SITE_TITLE } from '../consts';
+import Layout from "../layouts/Layout.astro";
+import { LanguageSelector } from "astro-i18next/components";
+import { localizePath } from "astro-i18next";
+import i18next from "i18next";
+import i18next, { t, changeLanguage } from "i18next";
+import Agreement from "../components/Agreement.astro";
+import { Trans, HeadHrefLangs } from "astro-i18next/components";
+import HeaderMain from './HeaderMain.astro';
+import { LanguageSelector } from "astro-i18next/components";
+
+const { isGuide, isMain } = Astro.props;
+---
+
+<Agreement/>
+
+<r lang={i18next.language} class="bannerholder">
+	<t id="grad" style="top:0; left:0; width:100%; height:100px; opacity:0; transition:0.5s; pointer-events:none; z-index:0; position:absolute;"></t>
+	<a href={localizePath("/")} class="logohold"><img class="logo" style={isMain} src=" /img/Wii_Link_Logo.png" width="190px"><span style={isGuide} class="badge bg-success">{t("header.isGuide")}</span></a>
+	<button style={isGuide} class="btn2 btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
+		<i class="fa-solid fa-angle-right"></i>
+	  </button>
+	  <ul>
+		<a class="link" href={localizePath("/")}><div class="banner">{t("header.home")}<div class="underline"></div></div></a>
+		<a class="link" href={localizePath("/news")}><div class="banner">{t("header.news")}<div class="underline" style="background-color:#ffc10740;"></div></div></a>
+		<a class="link" href={localizePath("/guide/")}><div class="banner">{t("header.guide")}<div class="underline" style="background-color:#19875440;"></div></div></a>
+		<a class="link" href={localizePath("/status")}><div class="banner">{t("header.status")}<div class="underline" style="background-color:#0d6efd40;"></div></div></a>
+		<a class="link" href={localizePath("/guide/faq")}><div class="banner">{t("header.faq")}<div class="underline"></div></div></a>
+			<LanguageSelector showFlag={true} id="my-select-id" class="my-select-class" />
+			<div class="dropdown">
+				<button class="btn" onclick="toggleTranslate()"  id="titleTranslate" style="transform:translate(-5px, 0) scale(150%);" type="button" data-bs-toggle="" aria-expanded="false">
+				</button>
+				<ul class="dropdown-menu" id="dropMenu" style="transform:translate(50px, -10px); overflow:hidden;">
+					<form>
+					<li><h6 class="dropdown-header"><i class="fa fa-globe"></i> Choose your language</h6></li>
+					<div class="optDisplay" id="optionsDisplay" style="height:200px; width:200px; overflow-y:scroll; position:relative;"></div>
+				  <li><hr class="dropdown-divider"></li>
+				  <p style="left:50%; transform:translate(-50%, 0); width:90%; color:black; margin:0; position:relative;">
+					Do you want to contribute?</br> <a href="https://discord.gg/wiilink-750581992223146074" style="text-decoration:underline; color:#5685F2;"><i class="fa-brands fa-discord"></i> Join our Discord!</a>
+				  </p>
+				</form>
+				</ul>
+			  </div>
+		<a class="link" href={localizePath("/extras")}><div class="btn btn-danger" style="transform:translate(0, 1px); padding:9px;"><i class="fa-solid fa-box-open" style="margin-right:5px;"></i> {t("header.extras")}<span class="position-absolute top-0 start-50 translate-middle badge rounded-pill bg-danger" style="font-size:10px;">
+			{t("header.extrasNew")}
+		  </span>
+		</div></a>
+		<button style={isGuide} class="btn3 btn btn-secondary">
+			<a href={localizePath("/guide/")}>
+				<i class="fa-solid fa-house"></i>
+			</a>
+		  </button>
+		<a href={localizePath("/")}><button type="button" class="btn1 btn btn-success"><i class="fa-solid fa-download"></i></button></a>
+		<button id="themeColor" type="button" class="btn1 btn btn-light"  onclick="darkToggle()" style="width:45px;"><i class="fa-solid fa-moon"></i></button>
+	 </ul>
+</r>
+
+<script is:inline>
+
+        document.addEventListener('DOMContentLoaded', function () {
+
+			localStorage.setItem('languageOverride', 'yes');
+
+            var dropdown = document.getElementById("my-select-id");
+			var option = dropdown.options[0];
+			var optionName = option.value;
+			var editLink = optionName.split('/');
+			editlink = editLink.splice(0,2);
+			editLink = "/" + editLink.join('/') + "";
+			if (editLink == "/") {
+				editLink = "";
+			}
+
+			if (languageOverride != 'yes') {
+
+			switch (navigator.language.substring(0,2)) {
+				case "en":
+					if (navigator.language.substring(0,5) == "en-GB"){
+						localStorage.setItem('languageOverride', 'yes');
+						location.href = "/en-GB" + editLink + "";
+						break;
+					}
+					break;
+				case "es":
+					localStorage.setItem('languageOverride', 'yes');
+					location.href = "/es" + editLink + "";
+					break;
+				case "fr":
+					localStorage.setItem('languageOverride', 'yes');
+					location.href = "/fr" + editLink + "";
+					break;
+				case "de":
+					localStorage.setItem('languageOverride', 'yes');
+					location.href = "/fr" + editLink + "";
+					break;
+				case "pt":
+					localStorage.setItem('languageOverride', 'yes');
+					location.href = "/pt-PT" + editLink + "";
+					break;
+				case "jp":
+					localStorage.setItem('languageOverride', 'yes');
+					location.href = "/jp" + editLink + "";
+					break;
+			}
+			}
+
+            var optionsDisplayDiv = document.getElementById("optionsDisplay");
+			var titleTranslate = document.getElementById("titleTranslate");
+
+            optionsDisplayDiv.innerHTML = "";
+
+			for (var i = 0; i < dropdown.options.length; i++) {
+                var option = dropdown.options[i];
+                var optionName = option.value;
+                var optionLink = option.innerHTML;
+				var optionLinkFlag = optionLink.substring(0,4);
+
+				switch (optionLink.substring(0, 4).toLowerCase()) {
+					case '🇺🇸':
+						optionLink = "🇺🇸 English (US)";
+						break;
+					case '🇬🇧':
+						optionLink = "🇬🇧 English (UK)";
+						break;
+					case '🇧🇷':
+						optionLink = "🇧🇷 Português (BR)";
+						break;
+					case '🇵🇹':
+						optionLink = "🇵🇹 Português (PT)";
+						break;
+					case '🇻🇳':
+						optionLinkFlag = "<img src='/img/val.png' class='emoji'>";
+						optionLink = "<img src='/img/val.png' class='emoji'> Català (VA)";
+						break;
+				}
+
+				switch (optionName.substring(0, 7).toLowerCase()) {
+					case '/es-lat':
+						optionLinkFlag = " 🇲🇽";
+						optionLink = "🇲🇽 Español (LATAM)";
+						break;
+					case '/ca':
+						optionLinkFlag = "<img src='/img/cat.png' class='emoji'>";
+						optionLink = "<img src='/img/cat.png' class='emoji'> Català (CA)";
+						break;
+				}
+
+				if (i == 0) {
+					titleTranslate.innerHTML = optionLinkFlag;
+					optionsDisplayDiv.innerHTML += "<li><a href='" + optionName + "' onclick='override()' style='text-decoration:none; color:black;'><button class='dropdown-item' type='button'> <i class='fa fa-arrow-right' style='margin-right:5px; opacity:0.6;'></i> " + optionLink + "</button></a></li> <li><hr class='dropdown-divider'></li>"
+				} else {
+					optionsDisplayDiv.innerHTML += "<li><a href='" + optionName + "' onclick='override()' style='text-decoration:none; color:black;'><button class='dropdown-item' type='button'> <div class='dropdown-text' style='transition:0.2s;'>" + optionLink + "</div></button></a></li>"
+				}
+            }
+
+			twemoji.parse(document.getElementById("optionsDisplay"));
+			twemoji.parse(document.getElementById("titleTranslate"));
+        });
+
+		document.addEventListener('click', function(event) {
+    var dropdownButton = document.getElementById('titleTranslate');
+    var dropdownMenu = document.getElementById('dropMenu');
+
+    // Check if the click was outside the dropdown button or menu
+    if (!dropdownButton.contains(event.target) && !dropdownMenu.contains(event.target) && open == 1) {
+      // Close the dropdown
+	  document.getElementById("dropMenu").style.animation = "fadeout 0.2s ease-in-out forwards";
+				setTimeout(() => {
+				document.getElementById("dropMenu").style.opacity = "0";
+				document.getElementById("dropMenu").style.pointerEvents = "none";
+				document.getElementById("dropMenu").style.animation = "";
+				open = 0; }, "200")
+    }
+  });
+
+		let open = 0;
+		function toggleTranslate() {
+			if (open == 0) {
+				document.getElementById("dropMenu").style.opacity = "1";
+				document.getElementById("dropMenu").style.pointerEvents = "";
+				document.getElementById("dropMenu").style.animation = "fadedown 0.2s ease-in-out forwards";
+				open = 1;
+			} else {
+				document.getElementById("dropMenu").style.animation = "fadeout 0.2s ease-in-out forwards";
+				setTimeout(() => {
+				document.getElementById("dropMenu").style.opacity = "0";
+				document.getElementById("dropMenu").style.pointerEvents = "none";
+				document.getElementById("dropMenu").style.animation = "";
+				open = 0; }, "200")
+			}
+		}
+
+		document.getElementById("dropMenu").style.opacity = "0";
+		document.getElementById("dropMenu").style.pointerEvents = "none";
+    </script>
+
+
+<script is:inline>
+
+
+const languageOverride = localStorage.getItem('languageOverride');
+
+	function override() {
+		localStorage.setItem('languageOverride', 'yes');
+	}
+
+document.addEventListener('DOMContentLoaded', function () {
+  
+  const themeColorButton = document.getElementById('themeColor');
+  const savedMode = localStorage.getItem('color-mode');
+
+if (savedMode === 'dark') {
+    enableDarkMode();
+	const themeColorButton = document.getElementById('themeColor');
+	themeColorButton.innerHTML = "<svg style='transform:translate(-2px, -2px);' xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='#000000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='lucide lucide-sun'><circle cx='12' cy='12' r='4'/><path d='M12 2v2'/><path d='M12 20v2'/><path d='m4.93 4.93 1.41 1.41'/><path d='m17.66 17.66 1.41 1.41'/><path d='M2 12h2'/><path d='M20 12h2'/><path d='m6.34 17.66-1.41 1.41'/><path d='m19.07 4.93-1.41 1.41'/></svg>";
+	themeColorButton.style.filter = "invert(0)";
+  } else {
+    enableLightMode();
+	const themeColorButton = document.getElementById('themeColor');
+	themeColorButton.innerHTML = "<svg style='transform:translate(-2px, -2px);' xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='#000000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='lucide lucide-moon'><path d='M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z'/></svg>";
+	themeColorButton.style.filter = "invert(1)";
+  }
+});
+
+function enableDarkMode() {
+    document.documentElement.classList.add('dark');
+    localStorage.setItem('color-mode', 'dark');
+  }
+
+  // Function to enable light mode
+  function enableLightMode() {
+    document.documentElement.classList.remove('dark');
+    localStorage.setItem('color-mode', 'light');
+  }
+
+function darkToggle() {
+	const themeColorButton = document.getElementById('themeColor');
+    if (document.documentElement.classList.contains('dark')) {
+      enableLightMode();
+	  themeColorButton.innerHTML = "<svg style='transform:translate(-2px, -2px);' xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='#000000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='lucide lucide-moon'><path d='M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z'/></svg>";
+	  themeColorButton.style.filter = "invert(1)";
+    } else {
+      enableDarkMode();
+	  themeColorButton.innerHTML = "<svg style='transform:translate(-2px, -2px);' xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='#000000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='lucide lucide-sun'><circle cx='12' cy='12' r='4'/><path d='M12 2v2'/><path d='M12 20v2'/><path d='m4.93 4.93 1.41 1.41'/><path d='m17.66 17.66 1.41 1.41'/><path d='M2 12h2'/><path d='M20 12h2'/><path d='m6.34 17.66-1.41 1.41'/><path d='m19.07 4.93-1.41 1.41'/></svg>";
+	  themeColorButton.style.filter = "invert(0)";
+    }
+  }
+
+</script>
+
+<script is:inline>
+var gradient = document.getElementById("grad");
+var gradient = document.getElementById("grad");
+
+document.addEventListener('scroll', checkPageScroll);
+
+function checkPageScroll() {
+  var scrollPosition = window.scrollY || window.pageYOffset;
+
+  if (scrollPosition > 0) {
+    gradient.style.opacity = 1;
+  } else {
+	gradient.style.opacity = 0;
+  }
+}
+
+function checkScrollPosition() {
+  var optionsDisplay = document.getElementById("optionsDisplay");
+  var scrollTop = optionsDisplay.scrollTop;
+  var scrollHeight = optionsDisplay.scrollHeight;
+  var clientHeight = optionsDisplay.clientHeight;
+
+  if (scrollTop === 0) {
+    optionsDisplay.classList.add("hide2");
+	optionsDisplay.classList.remove("hide");
+  } else if (scrollTop + clientHeight >= scrollHeight) {
+    optionsDisplay.classList.add("hide");
+	optionsDisplay.classList.remove("hide2");
+  } else {
+	optionsDisplay.classList.add("hide");
+	optionsDisplay.classList.add("hide2");
+  }
+}
+
+document.getElementById("optionsDisplay").addEventListener('scroll', checkScrollPosition);
+checkScrollPosition();
+
+
+
+
+</script>
+  
+
+<style>
+	.my-select-class{
+		top:0;
+		left:0;
+		width:45px;
+		height:42px;
+		font-size:30px;
+		border:0px;
+		display:none;
+		background-color:#ffffff00;
+		position:relative;
+	}
+	.badge{
+		top:20px; 
+		left:230px; 
+		font-size:15px; 
+		font-family:systemui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; 
+		position:absolute;
+	}
+	.hide::before{
+  content: "";
+  position: fixed;
+  left: 0;
+  top: 41px;
+  background: linear-gradient(to bottom, #ffffff, transparent);
+  pointer-events: none;
+  width: 100%;
+  height: 50px;
+  animation: fadein 0.1s linear forwards;
+	}
+	.hide2::after{
+  content: "";
+  position: fixed;
+  left: 0;
+  bottom: 73px;
+  background: linear-gradient(to top, #ffffff, transparent);
+  pointer-events: none;
+  width: 100%;
+  height: 50px;
+  animation: fadein 0.1s linear forwards;
+	}
+	@keyframes fadein {
+		0%{
+			opacity:0;
+		}
+		100% {
+			opacity:1;
+		}
+	}
+	#grad{
+	background: rgb(255,255,255);
+	background: linear-gradient(0deg, rgba(255,255,255,0) 0%, rgba(32,32,32,0.5) 100%);
+	}
+
+.link:hover .underline{
+    height:15px;
+    transition: 0.5s;
+  }
+  .underline{
+    bottom:0;
+    left:0;
+    transform: translate(0, -18px);
+    width:100%;
+    height:0px;
+    z-index: -1;
+    transition: 0.5s;
+    background-color: #00000020;
+    position: relative;
+
+  }
+
+  .optDisplay::-webkit-scrollbar{
+		display:none;
+	}
+
+	.btn1{
+		transform: translate(0, 10px);
+		font-size: 20px;
+		margin:0px;
+		margin-bottom:18px;
+		position: relative;
+	}
+
+	.btn2{
+		top:50%;
+		left:258px;
+		transform: translate(0, -50%);
+		opacity:0;
+		font-size: 20px;
+		margin:0px;
+		margin-bottom:18px;
+		position: absolute;
+	}
+
+	.btn3{
+		transform: translate(0, 10px);
+		font-size: 20px;
+		margin:0px;
+		margin-bottom:18px;
+		position: relative;
+	}
+
+a:link{
+	text-decoration: none;
+	color: white;
+}
+
+a:visited{
+	text-decoration: none;
+	color: white;
+}
+
+.bannerholder{
+    top:0;
+    left:0;
+	width:100%;
+	height:128px;
+	display:block;
+	background-color: rgba(255, 255, 255, 0);
+    z-index: 80;
+    transition: 0.5s;
+    position: sticky;
+}
+
+.logo{
+	top:50%;
+	left:50px;
+	transform: translate(0,-50%);
+	filter: invert(1);
+	position: absolute;
+}
+
+@keyframes fadedown{
+	0%{
+		opacity:0;
+		height:0px;
+		transform: translate(50px, -15px);
+	}
+	100%{
+		opacity:1;
+		height:320px;
+		transform: translate(50px, -10px);
+	}
+}
+
+@keyframes fadeout{
+	0%{
+		opacity:1;
+		height:320px;
+		transform: translate(50px, -10px);
+	}
+	100%{
+		opacity:0;
+		height:0px;
+		transform: translate(50px, -15px);
+	}
+}
+
+ul{
+	display: flex;
+	gap:10px;
+	width:auto;
+	right:50px;
+	top:60px;
+	transform: translate(0, -50%);
+	align-items:center;
+	justify-content:center;
+	font-family: systemui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+	color:rgba(255, 255, 255, 0.53);
+	position: absolute;
+}
+
+.banner{
+	font-size:20px;
+	margin-right:20px;
+	mix-blend-mode: difference;
+	color:black;
+    position:relative;
+    transition: 0.5s;
+}
+
+@media (max-width:1400px){
+		.btn2{
+			opacity:1;
+		}
+	}
+
+@media (max-width:1000px){
+	.container{
+		top:0;
+		left:0;
+		width:100%;
+		height:100%;
+		transform: translate(0, 0);
+		border: 0px;
+		border-radius: 0px;
+		animation: none;
+		position: fixed;
+	}
+
+	.osimg{
+		left:90%;
+		transform: translate(-50%, 0);
+		position: relative;
+	}
+}
+
+@media (max-width:1000px){
+	.bannerholder{
+		opacity:0;
+	}
+
+	ul{
+		display:none;
+	}
+
+	.lang{
+		display: none;
+	}
+
+	span{
+		display:none;
+	}
+
+	.btn1{
+		display:none;
+	}
+}
+
+
+@media (min-width:2000px) {
+		.bannerholder{
+			width:2000px;
+			left:50%;
+			top:0px;
+			transform: translate(-50%, 0);
+			border-bottom-left-radius: 8px;
+			border-bottom-right-radius: 8px;
+			position: fixed;
+	}
+</style>
